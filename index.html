@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Clock + Kalender Jawa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    .clock-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 40px 60px;
+        text-align: center;
+        color: white;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        animation: fadeIn 1.5s ease-in-out;
+        width: 400px;
+    }
+
+    .date {
+        font-size: 18px;
+        font-weight: 300;
+        margin-bottom: 5px;
+    }
+
+    .jawa {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 15px;
+        opacity: 0.9;
+        color: #911b69;
+    }
+
+    .time {
+        font-size: 48px;
+        font-weight: 700;
+        letter-spacing: 3px;
+    }
+
+    .seconds {
+        font-size: 24px;
+        vertical-align: super;
+        opacity: 0.8;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+</head>
+<body>
+
+<div class="clock-container">
+    <div class="date" id="date"></div>
+    <div class="jawa" id="jawa"></div>
+    <div class="time">
+        <span id="hours"></span>:<span id="minutes"></span>
+        <span class="seconds" id="seconds"></span>
+    </div>
+</div>
+
+<script>
+    const hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+    const bulanList = [
+        "Januari","Februari","Maret","April","Mei","Juni",
+        "Juli","Agustus","September","Oktober","November","Desember"
+    ];
+
+    const pasaranList = ["Wage","Kliwon","Legi","Pahing","Pon"];
+
+    function formatDuaDigit(angka) {
+        return angka.toString().padStart(2, "0");
+    }
+
+    function hitungPasaran(date) {
+        // 1 Januari 1970 adalah Legi
+        const baseDate = new Date(1970, 0, 1);
+        const selisihHari = Math.floor((date - baseDate) / (1000 * 60 * 60 * 24));
+        return pasaranList[(selisihHari % 5 + 5) % 5];
+    }
+
+    function updateClock() {
+        const now = new Date();
+
+        const hari = hariList[now.getDay()];
+        const tanggal = now.getDate();
+        const bulan = bulanList[now.getMonth()];
+        const tahun = now.getFullYear();
+
+        const jam = formatDuaDigit(now.getHours());
+        const menit = formatDuaDigit(now.getMinutes());
+        const detik = formatDuaDigit(now.getSeconds());
+
+        const pasaran = hitungPasaran(now);
+
+        document.getElementById("date").textContent =
+            `${hari}, ${tanggal} ${bulan} ${tahun}`;
+
+        document.getElementById("jawa").textContent =
+            `Kalender Jawa: ${hari} ${pasaran}`;
+
+        document.getElementById("hours").textContent = jam;
+        document.getElementById("minutes").textContent = menit;
+        document.getElementById("seconds").textContent = detik;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
+</body>
+</html>
